@@ -5,7 +5,7 @@ from scapy.all import *
 import collections
 import time
 
-#时间流量图
+#Time Flow Chart
 def time_flow(PCAPS):
     time_flow_dict = collections.OrderedDict()
     start = PCAPS[0].time
@@ -15,7 +15,7 @@ def time_flow(PCAPS):
         time_flow_dict[float('%.3f'%timediff)] = len(corrupt_bytes(pcap))
     return time_flow_dict
 
-#获取抓包主机的IP
+#Get the IP of the packet capture host
 def get_host_ip(PCAPS):
     ip_list = list()
     for pcap in PCAPS:
@@ -25,7 +25,7 @@ def get_host_ip(PCAPS):
     host_ip = collections.Counter(ip_list).most_common(1)[0][0]
     return host_ip
 
-#数据流入流出统计
+#Data inflow and outflow statistics
 def data_flow(PCAPS, host_ip):
     data_flow_dict = {'IN': 0, 'OUT': 0}
     for pcap in PCAPS:
@@ -38,7 +38,7 @@ def data_flow(PCAPS, host_ip):
                 pass
     return data_flow_dict
 
-#访问IP地址统计
+#Access IP address statistics
 def data_in_out_ip(PCAPS, host_ip):
     in_ip_packet_dict = dict()
     in_ip_len_dict = dict()
@@ -97,7 +97,7 @@ def data_in_out_ip(PCAPS, host_ip):
     in_ip_dict = {'in_keyp': in_keyp_list, 'in_packet': in_packet_list, 'in_keyl': in_keyl_list, 'in_len': in_len_list, 'out_keyp': out_keyp_list, 'out_packet': out_packet_list, 'out_keyl': out_keyl_list, 'out_len': out_len_list}
     return in_ip_dict
 
-#常见协议流量统计
+#Common Protocol Traffic Statistics
 def proto_flow(PCAPS):
     proto_flow_dict = collections.OrderedDict()
     proto_flow_dict['IP'] = 0
@@ -151,7 +151,7 @@ def proto_flow(PCAPS):
     return proto_flow_dict
 
 
-#流量最多协议数量统计
+#Statistics on the number of protocols with the most traffic
 def most_flow_statistic(PCAPS, PD):
     most_flow_dict = collections.defaultdict(int)
     for pcap in PCAPS:

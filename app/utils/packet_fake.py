@@ -3,7 +3,7 @@ __author__ = 'dj'
 
 import os
 
-#获取网卡名称
+#Get the name of the network card
 def get_ifaces():
     ifaces_list = os.popen('ifconfig').read().split('\n\n')
     ifaces_list = [i for i in ifaces_list if i]

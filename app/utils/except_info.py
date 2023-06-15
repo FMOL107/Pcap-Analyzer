@@ -8,7 +8,7 @@ import collections
 import binascii
 from .data_extract import web_data, telnet_ftp_data
 
-#根据可疑端口判断是否有木马病毒
+#Determine if there is a Trojan horse based on suspicious ports
 def port_warning(PCAPS, host_ip):
     with open('./app/utils/protocol/WARN', 'r', encoding='UTF-8') as f:
         warns = f.readlines()
@@ -16,7 +16,7 @@ def port_warning(PCAPS, host_ip):
     for warn in warns:
         warn = warn.strip()
         WARN_DICT[int(warn.split(':')[0])] = warn.split(':')[1]
-    #迭代数据包
+    #Iterative Data Packages
     portwarn_list = list()
     for pcap in PCAPS:
         if pcap.haslayer(TCP):
@@ -46,7 +46,7 @@ def port_warning(PCAPS, host_ip):
     return portwarn_list
 
 
-#根据WEB内容来匹配常见WEB攻击,SQL注入，XSS，暴力破解，目录遍历，任意文件下载，木马
+#Match common WEB attacks with WEB content, SQL injection, XSS, brute force cracking, directory traversal, arbitrary file downloads, Trojan horses
 def web_warning(PCAPS, host_ip):
     with open('./app/utils/warning/HTTP_ATTACK', 'r', encoding='UTF-8') as f:
         attacks = f.readlines()
@@ -68,7 +68,7 @@ def web_warning(PCAPS, host_ip):
         tomcat = tomcat_pattern.findall(data)
         if username or password or tomcat:
             webbur_list.append(web['ip_port'].split(':')[0])
-        for pattn, attk in ATTACK_DICT.items(): #特征码和攻击名称
+        for pattn, attk in ATTACK_DICT.items(): #Feature codes and attack names
             if pattn.upper() in data.upper():
                 webwarn_list.append({'ip_port': web['ip_port'].split(':')[0]+':'+web['ip_port'].split(':')[1], 'warn':attk, 'time':pattn, 'data':data})
     ip_count = collections.Counter(webbur_list)
@@ -77,7 +77,7 @@ def web_warning(PCAPS, host_ip):
         webwarn_list.append({'ip_port': ip, 'warn':u'HTTP暴力破解', 'time': str(count), 'data':None})
     return webwarn_list
 
-#根据FTP登录失败次数，判断FTP暴力破解攻击,登录次数打大于10次算暴力破解
+#Based on the number of failed FTP login attempts, determine the number of FTP brute force attacks, the number of login attempts greater than 10 times is considered brute force.
 def ftp_warning(PCAPS, host_ip):
     ftpdata = telnet_ftp_data(PCAPS, host_ip, 21)
     ftpwarn_list = list()
@@ -91,8 +91,8 @@ def ftp_warning(PCAPS, host_ip):
         ftpwarn_list.append({'ip_port': ip, 'warn':u'FTP暴力破解', 'time': str(count), 'data':None})
     return ftpwarn_list
 
-#未完，抓取数据替换正则表达式
-#根据Telnet登录失败次数，判断FTP暴力破解攻击,登录次数打大于10次算暴力破解
+#Unfinished, grabbing data to replace regular expressions
+#Based on the number of failed Telnet login attempts, determine the number of FTP brute force attacks, the number of login attempts is greater than 10 brute force attacks.
 def telnet_warning(PCAPS, host_ip):
     telnetdata = telnet_ftp_data(PCAPS, host_ip, 23)
     telnetwarn_list = list()
@@ -106,7 +106,7 @@ def telnet_warning(PCAPS, host_ip):
         telnetwarn_list.append({'ip_port': ip, 'warn':u'Telnet暴力破解', 'time': str(count), 'data':None})
     return telnetwarn_list
 
-#同理得到ARP攻击警告
+#Similarly get ARP attack warning
 def arp_warning(PCAPS):
     arpwarn_list = list()
     arp_list = list()

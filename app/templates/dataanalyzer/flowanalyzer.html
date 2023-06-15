@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>流量分析</title>
+    <title>Flow analysis</title>
 
     <link href="../../static/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="../../static/bootstrap-3.3.5/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
@@ -14,52 +14,52 @@
 </head>
 <body>
 <br>
-<br><!--时间流量图-->
+<br><!--Time Flow Chart-->
 <div class="container" style="height: 400px; width: 90%">
     <div id="time_flow" style="height: 400px;width: 75%;float:left;"></div>
     <div id="flow_in_out" style="height: 400px;width: 25%;float:left;"></div>
 </div>
-<br><!--协议流量图-->
+<br><!--Protocol Flow Chart-->
 <div class="container" style="height: 400px; width: 90%">
     <div id="proto_flow_pie" style="height: 400px;width: 25%;float:left;"></div>
     <div id="proto_flow_bar" style="height: 400px;width: 50%;float:left;"></div>
     <div id="proto_flow_count" style="height: 400px;width: 25%;float:left;"></div>
 </div>
-<br><!--流入流出ip数据包个数-->
+<br><!--Number of incoming and outgoing ip packets-->
 <div class="container" style="height: 400px; width: 90%">
     <div id="data_in_packet" style="height: 400px;width: 50%;float:left;"></div>
     <div id="data_out_packet" style="height: 400px;width: 50%;float:left;"></div>
 </div>
-<br><!--流入流出ip流量-->
+<br><!--Inbound and outbound ip traffic-->
 <div class="container" style="height: 400px; width: 90%">
     <div id="data_in_len" style="height: 400px;width: 50%;float:left;"></div>
     <div id="data_out_len" style="height: 400px;width: 50%;float:left;"></div>
 </div>
 {% autoescape false %}
-    <!-- ECharts单文件引入 -->
+    <!-- ECharts single file introduction -->
     <script src="../../static/echarts-2.27/build/dist/echarts.js" type="text/javascript"></script>
-    <!--时间流量曲线图-->
+    <!--Time flow graphs-->
     <script type="text/javascript">
-        // 路径配置
+        // Path configuration
         require.config({
             paths: {
                 echarts: '../../static/echarts-2.27/build/dist/'
             }
         });
 
-        // 使用
+        // Use
         require(
             [
                 'echarts',
-                'echarts/chart/line' // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/line' // Use the bar chart to load the bar module on demand
             ],
             function (ec) {
-                // 基于准备好的dom，初始化echarts图表
+                // Initialize the echarts chart based on the prepared do
                 var myChart = ec.init(document.getElementById('time_flow'));
 
                 var option = {
                     title : {
-                        text: '时间流量图',
+                        text: 'Time Flow Chart',
                         x:'center'
                     },
                     tooltip : {
@@ -69,7 +69,7 @@
                     xAxis : [
                         {
                             type : 'category',
-                            name : '相对时间',
+                            name : 'Relative time',
                             boundaryGap : true,
                             data : {{ time_flow_keys }}
                         }
@@ -77,7 +77,7 @@
                     yAxis : [
                         {
                             type : 'value',
-                            name : '数据包字节',
+                            name : 'Packet bytes',
                             axisLabel : {
                                 formatter: '{value} byte'
                             }
@@ -85,14 +85,14 @@
                     ],
                     series : [
                         {
-                            name:'数据包字节',
+                            name:'Packet bytes',
                             type:'line',
                             smooth:true,
                             symbol: 'none',
                             itemStyle:{
                                 normal:{
                                     label:{show:true},
-                                    color:'#6495ed', //图例颜色设置
+                                    color:'#6495ed', //Legend colour settings
                                     },
                                 emphasis:{label:{show:true}}
                                     },
@@ -101,34 +101,34 @@
                     ]
                 };
 
-                // 为echarts对象加载数据
+                // Loading data for the echarts object
                 myChart.setOption(option);
             }
         );
     </script>
 
-<!--流入流出饼状图-->
+<!--Inflow and outflow pie charts-->
 <script type="text/javascript">
-        // 路径配置
+        // Path configuration
         require.config({
             paths: {
                 echarts: '../../static/echarts-2.27/build/dist/'
             }
         });
 
-        // 使用
+        // Use
         require(
             [
                 'echarts',
-                'echarts/chart/pie' // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/pie' // Use the bar chart to load the bar module on demand
             ],
             function (ec) {
-                // 基于准备好的dom，初始化echarts图表
+                // Initialize the echarts chart based on the prepared do
                 var myChart = ec.init(document.getElementById('flow_in_out'));
 
                 var option = {
                     title : {
-                        text: '数据流入流出统计',
+                        text: 'Data inflow and outflow statistics',
                         x:'center'
                     },
                     tooltip : {
@@ -138,51 +138,51 @@
                     legend: {
                         orient : 'vertidata_in_lencal',
                         x : 'left',
-                        data:['流入','流出']
+                        data:['Inflow','Outflow']
                     },
                     calculable : false,
                     series : [
                         {
-                            name:'数据流入流出',
+                            name:'Data inflow and outflow',
                             type:'pie',
                             radius : '60%',
                             center: ['50%', '50%'],
                             data:[
-                                {value:{{ data_flow['IN'] }}, name:'流入'},
-                                {value:{{ data_flow['OUT'] }}, name:'流出'}
+                                {value:{{ data_flow['IN'] }}, name:'Inflow'},
+                                {value:{{ data_flow['OUT'] }}, name:'Outflow'}
                             ]
                         }
                     ]
                 };
 
-                // 为echarts对象加载数据
+                // Loading data for the echarts object
                 myChart.setOption(option);
             }
         );
     </script>
 
- <!--常见协议统计条形图-->
+ <!--Common Protocol Statistics Bar Chart-->
     <script type="text/javascript">
-        // 路径配置
+        // Path configuration
         require.config({
             paths: {
                 echarts: '../../static/echarts-2.27/build/dist/'
             }
         });
 
-        // 使用
+        // Use
         require(
             [
                 'echarts',
-                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/bar' // Use the bar chart to load the bar module on demand
             ],
             function (ec) {
-                // 基于准备好的dom，初始化echarts图表
+                // Initialize the echarts chart based on the prepared do
                 var myChart = ec.init(document.getElementById('proto_flow_bar'));
 
                 var option = {
                     title : {
-                        text: '常见协议流量统计',
+                        text: 'Common Protocol Traffic Statistics',
                         x:'center'
                     },
                     tooltip: {
@@ -192,7 +192,7 @@
                     xAxis : [
                         {
                             type : 'category',
-                            name : '协议类型',
+                            name : 'Type of agreement',
                             boundaryGap : true,
                             data : ["IP","IPv6","TCP","UDP","ARP","ICMP","DNS","HTTP","HTTPS","Others"]
                         }
@@ -200,17 +200,17 @@
                     yAxis : [
                         {
                             type : 'value',
-                            name : '协议数据包总流量'
+                            name : 'Total protocol packet traffic'
                         }
                     ],
                     series : [
                         {
-                            "name":"协议数据包总流量",
+                            "name":"Total protocol packet traffic",
                             "type":"bar",
                             itemStyle:{
                                 normal:{
                                     label:{show:true},
-                                    color:'#87cefa' //图例颜色设置
+                                    color:'#87cefa' //Legend colour settings
                                     },
                                 emphasis:{label:{show:true}}
                                     },
@@ -219,28 +219,28 @@
                     ]
                 };
 
-                // 为echarts对象加载数据
+                // Loading data for the echarts object
                 myChart.setOption(option);
             }
         );
     </script>
-<!--常见协议流量长度饼状图-->
+<!--Common protocol traffic length pie chart-->
 <script type="text/javascript">
-        // 路径配置
+        // Path configuration
         require.config({
             paths: {
                 echarts: '../../static/echarts-2.27/build/dist/'
             }
         });
 
-        // 使用
+        // Use
         require(
             [
                 'echarts',
-                'echarts/chart/pie' // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/pie' // Use the bar chart to load the bar module on demand
             ],
             function (ec) {
-                // 基于准备好的dom，初始化echarts图表
+                // Initialize the echarts chart based on the prepared do
                 var myChart = ec.init(document.getElementById('proto_flow_pie'));
 
                 var option = {
@@ -256,7 +256,7 @@
                     calculable : false,
                     series : [
                         {
-                            name:'协议数据包总流量',
+                            name:'Total protocol packet traffic',
                             type:'pie',
                             radius : '60%',
                             center: ['50%', '50%'],
@@ -276,34 +276,34 @@
                     ]
                 };
 
-                // 为echarts对象加载数据
+                // Loading data for the echarts object
                 myChart.setOption(option);
             }
         );
     </script>
 
-<!--流量最多协议统计饼状图-->
+<!--Pie chart of the most trafficked protocol statistics-->
 <script type="text/javascript">
-        // 路径配置
+        // Path configuration
         require.config({
             paths: {
                 echarts: '../../static/echarts-2.27/build/dist/'
             }
         });
 
-        // 使用
+        // Use
         require(
             [
                 'echarts',
-                'echarts/chart/pie' // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/pie' // Use the bar chart to load the bar module on demand
             ],
             function (ec) {
-                // 基于准备好的dom，初始化echarts图表
+                // Initialize the echarts chart based on the prepared do
                 var myChart = ec.init(document.getElementById('proto_flow_count'));
 
                 var option = {
                     title : {
-                        text: '流量最多协议统计',
+                        text: 'Most trafficked protocol statistics',
                         x:'center'
                     },
                     tooltip : {
@@ -318,7 +318,7 @@
                     calculable : false,
                     series : [
                         {
-                            name:'协议数据包总流量',
+                            name:'Total protocol packet traffic',
                             type:'pie',
                             radius : '60%',
                             center: ['50%', '50%'],
@@ -331,34 +331,34 @@
                     ]
                 };
 
-                // 为echarts对象加载数据
+                // Loading data for the echarts object
                 myChart.setOption(option);
             }
         );
     </script>
 
-<!--流入IP数据包个数图-->
+<!--Graph of the number of incoming IP packets-->
 <script type="text/javascript">
-        // 路径配置
+        // Path configuration
         require.config({
             paths: {
                 echarts: '../../static/echarts-2.27/build/dist/'
             }
         });
 
-        // 使用
+        // Use
         require(
             [
                 'echarts',
-                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/bar' // Use the bar chart to load the bar module on demand
             ],
             function (ec) {
-                // 基于准备好的dom，初始化echarts图表
+                // Initialize the echarts chart based on the prepared do
                 var myChart = ec.init(document.getElementById('data_in_packet'));
 
                 var option = {
                     title : {
-                        text: '流入IP流量数据包个数图',
+                        text: 'Map of the number of packets flowing into IP traffic',
                     },
                     tooltip : {
                         trigger: 'axis'
@@ -367,27 +367,27 @@
                     xAxis : [
                         {
                             type : 'value',
-                            name : '数据包个数'
+                            name : 'Number of packets'
                         }
                     ],
                     yAxis : [
                         {
                             type : 'category',
-                            name : '流入IP',
+                            name : 'Incoming IP',
                             data : {{ ip_flow['in_keyp'] }}
                         }
                     ],
-                     grid: { // 控制图的大小，调整下面这些值就可以
+                     grid: { // To control the size of the graph, adjust the following values
                           x: 100,
                      },
                     series : [
                         {
-                            name:'数据包个数',
+                            name:'Number of packets',
                             type:'bar',
                             itemStyle:{
                                 normal:{
                                     label:{show:true},
-                                    color:'#6495ed' //图例颜色设置
+                                    color:'#6495ed' //Legend colour settings
                                     },
                                 emphasis:{label:{show:true}}
                                     },
@@ -396,34 +396,34 @@
                     ]
                 };
 
-                // 为echarts对象加载数据
+                // Loading data for the echarts object
                 myChart.setOption(option);
             }
         );
     </script>
 
-<!--流出IP数据包个数图-->
+<!--Number of outgoing IP packets graph-->
 <script type="text/javascript">
-        // 路径配置
+        // Path configuration
         require.config({
             paths: {
                 echarts: '../../static/echarts-2.27/build/dist/'
             }
         });
 
-        // 使用
+        // Use
         require(
             [
                 'echarts',
-                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/bar' // Use the bar chart to load the bar module on demand
             ],
             function (ec) {
-                // 基于准备好的dom，初始化echarts图表
+                // Initialize the echarts chart based on the prepared do
                 var myChart = ec.init(document.getElementById('data_out_packet'));
 
                 var option = {
                     title : {
-                        text: '流出IP流量数据包个数图',
+                        text: 'Number of outgoing IP traffic packets graph',
                     },
                     tooltip : {
                         trigger: 'axis'
@@ -432,27 +432,27 @@
                     xAxis : [
                         {
                             type : 'value',
-                            name : '数据包个数'
+                            name : 'Number of packets'
                         }
                     ],
                     yAxis : [
                         {
                             type : 'category',
-                            name : '流出IP',
+                            name : 'Outgoing IP',
                             data : {{ ip_flow['out_keyp'] }}
                         }
                     ],
-                     grid: { // 控制图的大小，调整下面这些值就可以
+                     grid: { // To control the size of the graph, adjust the following values
                           x: 100,
                      },
                     series : [
                         {
-                            name:'数据包个数',
+                            name:'Number of packets',
                             type:'bar',
                             itemStyle:{
                                 normal:{
                                     label:{show:true},
-                                    color:'#ff7f50' //图例颜色设置
+                                    color:'#ff7f50' //Legend colour settings
                                     },
                                 emphasis:{label:{show:true}}
                                     },
@@ -461,34 +461,34 @@
                     ]
                 };
 
-                // 为echarts对象加载数据
+                // Loading data for the echarts object
                 myChart.setOption(option);
             }
         );
     </script>
 
-<!--流入IP流量图-->
+<!--Incoming IP traffic graph-->
 <script type="text/javascript">
-        // 路径配置
+        // Path configuration
         require.config({
             paths: {
                 echarts: '../../static/echarts-2.27/build/dist/'
             }
         });
 
-        // 使用
+        // Use
         require(
             [
                 'echarts',
-                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/bar' // Use the bar chart to load the bar module on demand
             ],
             function (ec) {
-                // 基于准备好的dom，初始化echarts图表
+                // Initialize the echarts chart based on the prepared do
                 var myChart = ec.init(document.getElementById('data_in_len'));
 
                 var option = {
                     title : {
-                        text: '流入IP总流量图',
+                        text: 'Total incoming IP traffic graph',
                     },
                     tooltip : {
                         trigger: 'axis'
@@ -497,27 +497,27 @@
                     xAxis : [
                         {
                             type : 'value',
-                            name : '数据包总流量'
+                            name : 'Total packet traffic'
                         }
                     ],
                     yAxis : [
                         {
                             type : 'category',
-                            name : '流入IP',
+                            name : 'Incoming IP',
                             data : {{ ip_flow['in_keyl'] }}
                         }
                     ],
-                     grid: { // 控制图的大小，调整下面这些值就可以
+                     grid: { // To control the size of the graph, adjust the following values
                           x: 100,
                      },
                     series : [
                         {
-                            name:'数据包总流量',
+                            name:'Total packet traffic',
                             type:'bar',
                             itemStyle:{
                                 normal:{
                                     label:{show:true},
-                                    color:'#6495ed' //图例颜色设置
+                                    color:'#6495ed' //Legend colour settings
                                     },
                                 emphasis:{label:{show:true}}
                                     },
@@ -526,34 +526,34 @@
                     ]
                 };
 
-                // 为echarts对象加载数据
+                // Loading data for the echarts object
                 myChart.setOption(option);
             }
         );
     </script>
 
-<!--流出IP流量图-->
+<!--Outgoing IP traffic graph-->
 <script type="text/javascript">
-        // 路径配置
+        // Path configuration
         require.config({
             paths: {
                 echarts: '../../static/echarts-2.27/build/dist/'
             }
         });
 
-        // 使用
+        // Use
         require(
             [
                 'echarts',
-                'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/bar' // Use the bar chart to load the bar module on demand
             ],
             function (ec) {
-                // 基于准备好的dom，初始化echarts图表
+                // Initialize the echarts chart based on the prepared do
                 var myChart = ec.init(document.getElementById('data_out_len'));
 
                 var option = {
                     title : {
-                        text: '流出IP总流量图',
+                        text: 'Total outgoing IP traffic graph',
                     },
                     tooltip : {
                         trigger: 'axis'
@@ -562,27 +562,27 @@
                     xAxis : [
                         {
                             type : 'value',
-                            name : '数据包总流量'
+                            name : 'Total packet traffic'
                         }
                     ],
                     yAxis : [
                         {
                             type : 'category',
-                            name : '流出IP',
+                            name : 'Outgoing IP',
                             data : {{ ip_flow['out_keyl'] }}
                         }
                     ],
-                     grid: { // 控制图的大小，调整下面这些值就可以
+                     grid: { // To control the size of the graph, adjust the following values
                           x: 100,
                      },
                     series : [
                         {
-                            name:'数据包总流量',
+                            name:'Total packet traffic',
                             type:'bar',
                             itemStyle:{
                                 normal:{
                                     label:{show:true},
-                                    color:'#ff7f50' //图例颜色设置
+                                    color:'#ff7f50' //Legend colour settings
                                     },
                                 emphasis:{label:{show:true}}
                                     },
@@ -591,7 +591,7 @@
                     ]
                 };
 
-                // 为echarts对象加载数据
+                // Loading data for the echarts object
                 myChart.setOption(option);
             }
         );

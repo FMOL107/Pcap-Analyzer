@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Telnet数据</title>
+    <title>Telnet data</title>
 
     <link href="../../static/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="../../static/bootstrap-3.3.5/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css"/>
@@ -15,7 +15,7 @@
 </head>
 <body>
 <div class="container">
-    <h2 class="text-center">Telnet连接数据</h2>
+    <h2 class="text-center">Telnet connection data</h2>
 </div>
 <br>
 
@@ -23,11 +23,11 @@
     <table class="table table-hover table-responsive  table-condensed table-striped">
       <thead>
         <tr>
-            <th class="text-center">序号</th>
-            <th class="text-center">连接</th>
-            <th class="text-center">协议</th>
-            <th class="text-center">连接概要</th>
-            <th class="text-center">数据量</th>
+            <th class="text-center">Serial number</th>
+            <th class="text-center">Connections</th>
+            <th class="text-center">Agreement</th>
+            <th class="text-center">Summary of connections</th>
+            <th class="text-center">Data volume</th>
         </tr>
       </thead>
       <tbody>
@@ -45,14 +45,14 @@
 </div>
 
 
-<!-- 模态框（Modal） -->
+<!-- Modal box (Modal) -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true" style="width:600px;margin: 0 auto; word-break:break-all">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">连接详情</h4>
+        <h4 class="modal-title" id="myModalLabel">Connection details</h4>
       </div>
       <div class="modal-body" style="height:400px; overflow-x: hidden;overflow-y:auto;">
 
@@ -65,22 +65,22 @@
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-<!--table点击事件-->
+<!--table click events-->
 <script>
     $(function () {
     $("table > tbody > tr").click(function () {
         var id=$(this).children('th').eq(0).text();
         $.ajax({
-        type: "GET",//jquery 请求方式为 get
-        url: "/telnetdata?id="+id,//jquery 请求URL
-        dataType: "html",//jquery接受类型 可以 json js html 等数据
-        cache: false,//是否缓存
+        type: "GET",//The jquery request method is get
+        url: "/telnetdata?id="+id,//jquery request URL
+        dataType: "html",//jquery accepts data of type json, js, html, etc.
+        cache: false,//Cached or not
         success: function(a) {
             $(".mydata").html(a);
         }
@@ -88,7 +88,7 @@
     });
 })
 </script>
-<!--模态框拖拽-->
+<!--Modal box drag and drop-->
 <script>
     $("#myModal").draggable({
     handle: ".modal-header"

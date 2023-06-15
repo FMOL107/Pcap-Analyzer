@@ -6,7 +6,7 @@ import time
 
 class PcapDecode:
     def __init__(self):
-        #ETHER:读取以太网层协议配置文件
+        #ETHER:Read Ethernet layer protocol configuration file
         with open('./app/utils/protocol/ETHER', 'r', encoding='UTF-8') as f:
             ethers = f.readlines()
         self.ETHER_DICT = dict()
@@ -14,7 +14,7 @@ class PcapDecode:
             ether = ether.strip().strip('\n').strip('\r').strip('\r\n')
             self.ETHER_DICT[int(ether.split(':')[0])] = ether.split(':')[1]
 
-        #IP:读取IP层协议配置文件
+        #IP:Read IP layer protocol configuration file
         with open('./app/utils/protocol/IP', 'r', encoding='UTF-8') as f:
             ips = f.readlines()
         self.IP_DICT = dict()
@@ -22,7 +22,7 @@ class PcapDecode:
             ip = ip.strip().strip('\n').strip('\r').strip('\r\n')
             self.IP_DICT[int(ip.split(':')[0])] = ip.split(':')[1]
 
-        #PORT:读取应用层协议端口配置文件
+        #PORT:Read application layer protocol port configuration file
         with open('./app/utils/protocol/PORT', 'r', encoding='UTF-8') as f:
             ports = f.readlines()
         self.PORT_DICT = dict()
@@ -30,7 +30,7 @@ class PcapDecode:
             port = port.strip().strip('\n').strip('\r').strip('\r\n')
             self.PORT_DICT[int(port.split(':')[0])] = port.split(':')[1]
 
-        #TCP:读取TCP层协议配置文件
+        #TCP:Read TCP layer protocol configuration file
         with open('./app/utils/protocol/TCP', 'r', encoding='UTF-8') as f:
             tcps = f.readlines()
         self.TCP_DICT = dict()
@@ -38,7 +38,7 @@ class PcapDecode:
             tcp = tcp.strip().strip('\n').strip('\r').strip('\r\n')
             self.TCP_DICT[int(tcp.split(':')[0])] = tcp.split(':')[1]
 
-        #UDP:读取UDP层协议配置文件
+        #UDP:Read UDP layer protocol configuration file
         with open('./app/utils/protocol/UDP', 'r', encoding='UTF-8') as f:
             udps = f.readlines()
         self.UDP_DICT = dict()
@@ -46,7 +46,7 @@ class PcapDecode:
             udp = udp.strip().strip('\n').strip('\r').strip('\r\n')
             self.UDP_DICT[int(udp.split(':')[0])] = udp.split(':')[1]
 
-    #解析以太网层协议
+    #Parsing Ethernet layer protocols
     def ether_decode(self, p):
         data = dict()
         if p.haslayer(Ether):
@@ -61,7 +61,7 @@ class PcapDecode:
             data['info'] = p.summary()
             return data
 
-    #解析IP层协议
+    #Parsing IP layer protocols
     def ip_decode(self, p):
         data = dict()
         if p.haslayer(IP):  #2048:Internet IP (IPv4)
@@ -132,7 +132,7 @@ class PcapDecode:
                 data['info'] = p.summary()
                 return data
 
-    #解析TCP层协议
+    #Parsing the TCP layer protocol
     def tcp_decode(self, p, ip):
         data = dict()
         tcp = p.getlayer(TCP)
@@ -153,7 +153,7 @@ class PcapDecode:
             data['Procotol'] = "TCP"
         return data
 
-    #解析UDP层协议
+    #Parsing the UDP layer protocol
     def udp_decode(self, p, ip):
         data = dict()
         udp = p.getlayer(UDP)

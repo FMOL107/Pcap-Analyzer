@@ -9,7 +9,7 @@ import os
 import re
 import binascii
 
-#web文件
+#web files
 def web_file(PCAPS, host_ip, folder):
     web_list = list()
     webdata = web_data(PCAPS, host_ip)
@@ -58,7 +58,7 @@ def web_file(PCAPS, host_ip, folder):
     return web_list
 
 
-#ftp文件
+#ftp file
 def ftp_file(PCAPS, host_ip, folder):
     ftp_list = list()
     ftp_cmd_data = telnet_ftp_data(PCAPS, host_ip, 21)
@@ -111,14 +111,14 @@ def ftp_file(PCAPS, host_ip, folder):
             pass
     return ftp_list
 
-#填充不符合规范的base64数据
+#Padding non-conforming base64 data
 def base64padding(data):
     missing_padding = 4 - len(data) % 4
     if missing_padding:
         data += '='* missing_padding
     return data
 
-#mail文件
+#mail file
 def mail_file(PCAPS, host_ip, folder):
     filename_p = re.compile(r'filename="(.*?)"', re.S)
     charset = 'UTF-8'
@@ -168,7 +168,7 @@ def mail_file(PCAPS, host_ip, folder):
             mail_list.append({'ip_port':filename.split('_')[0]+':'+filename.split('_')[1], 'filename':folder+filename, 'size':'%.2f'%(os.path.getsize(folder+filename)/1024.0)})
     return mail_list
 
-#所有二进制文件
+#All binary files
 def all_files(PCAPS, folder):
     file_header = dict()
     with open('./app/utils/protocol/FILES', 'r', encoding='UTF-8') as f:

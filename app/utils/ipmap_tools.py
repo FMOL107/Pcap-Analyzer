@@ -6,7 +6,7 @@ import requests
 import os
 import geoip2.database
 
-#获取本机外网IP
+#Obtain local external IP
 def getmyip():
     try:
         headers = {'User-Agent': 'Baiduspider+(+http://www.baidu.com/search/spider.htm'}
@@ -16,7 +16,7 @@ def getmyip():
         return None
 
 
-#获取经纬度
+#Get latitude and longitude
 def get_geo(ip):
     reader = geoip2.database.Reader(os.getcwd()+'/app/utils/GeoIP/GeoLite2-City.mmdb')
     try:
@@ -28,7 +28,7 @@ def get_geo(ip):
     except:
         return None
 
-#IP地图数据
+#IP map data
 def get_ipmap(PCAPS, host_ip):
     geo_dict = dict()
     ip_value_dict = dict()

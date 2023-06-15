@@ -8,7 +8,7 @@ import time
 import binascii
 import base64
 
-#Web连接数据HTTP 80,8080
+#Web connection data HTTP 80,8080
 def web_data(PCAPS, host_ip):
     ip_port_id_list = list()
     id = 0
@@ -52,7 +52,7 @@ def web_data(PCAPS, host_ip):
     for ip_port, load_list in ip_port_ids_dict.items():
         data_id += 1
         raw_data = b''.join([PCAPS[i].load for i in load_list])
-        #解决编码问题
+        #Solving coding problems
         tmp_data = raw_data.decode('UTF-8', 'ignore')
         if ('gbk' in tmp_data) or ('GBK' in tmp_data):
             data = raw_data.decode('GBK', 'ignore')
@@ -61,7 +61,7 @@ def web_data(PCAPS, host_ip):
         ip_port_data_list.append({'data_id':data_id,'ip_port':ip_port, 'data':data, 'raw_data':raw_data, 'lens':'%.3f'%(sum([len(corrupt_bytes(PCAPS[i])) for i in load_list])/1024.0)})
     return ip_port_data_list
 
-#Mail连接数据POP3 src 110, IMAP src 143,SMTP des 25
+#Mail connection data POP3 src 110, IMAP src 143,SMTP des 25
 def mail_data(PCAPS, host_ip):
     ip_port_id_list = list()
     id = 0
@@ -153,15 +153,15 @@ def mail_data(PCAPS, host_ip):
             parse_data = imap_parse(raw_data)
         else:
             parse_data = None
-        #解决编码问题
+        #Solving coding problems
         data = raw_data.decode('UTF-8', 'ignore')
         ip_port_data_list.append({'data_id':data_id,'ip_port':ip_port, 'data':data, 'raw_data':raw_data, 'parse_data':parse_data,'lens':'%.3f'%(sum([len(corrupt_bytes(PCAPS[i])) for i in load_list])/1024.0)})
     return ip_port_data_list
 
-#解析SMTP协议
+#Parsing the SMTP protocol
 def smtp_parse(raw_data):
     data = raw_data.decode('UTF-8', 'ignore')
-    #各种字段正则表达式
+    #Regular expressions for various fields
     mailuser_p = re.compile(r'dXNlcm5hbWU6\r\n(.*?)\r\n', re.S)
     mailpasswd_p = re.compile(r'UGFzc3dvcmQ6\r\n(.*?)\r\n', re.S)
     maildate_p = re.compile(r'Date:(.*?)\r\n', re.S)
@@ -209,14 +209,14 @@ def smtp_parse(raw_data):
     parse_data = {'username':username, 'password':password, 'maildate':maildate, 'mailfrom':mailfrom, 'mailto':mailto, 'mailcc':mailcc, 'mailsubject':mailsubject, 'mailmessageid':mailmessageid, 'mailcontent':mailcontent, 'attachs_dict':attachs_dict}
     return parse_data
 
-#填充不符合规范的base64数据
+#Padding non-conforming base64 data
 def base64padding(data):
     missing_padding = 4 - len(data) % 4
     if missing_padding:
         data += '='* missing_padding
     return data
 
-#寻找mail中的所有附件
+#Find all attachments in mail
 def findmail_attachs(raw_data):
     filename_p = re.compile(r'filename="(.*?)"', re.S)
     attachs_dict = dict()
@@ -251,10 +251,10 @@ def findmail_attachs(raw_data):
                 filename = 'unknow'
     return attachs_dict
 
-#解析POP3协议
+#Parsing the POP3 protocol
 def pop3_parse(raw_data):
     data = raw_data.decode('UTF-8', 'ignore')
-    #各种字段正则表达式
+    #Regular expressions for various fields
     mailuser_p = re.compile(r'USER(.*?)\r\n', re.S)
     mailpasswd_p = re.compile(r'PASS(.*?)\r\n', re.S)
     maildate_p = re.compile(r'Date:(.*?)\r\n', re.S)
@@ -316,10 +316,10 @@ def pop3_parse(raw_data):
     parse_data = {'username':username, 'password':password, 'maildate':maildate, 'mailfrom':mailfrom, 'mailto':mailto, 'mailcc':mailcc, 'mailsubject':mailsubject, 'mailmessageid':mailmessageid, 'mailcontent':mailcontent, 'attachs_dict':attachs_dict}
     return parse_data
 
-#解析IMAP协议
+#Parsing the IMAP protocol
 def imap_parse(raw_data):
     data = raw_data.decode('UTF-8', 'ignore')
-    #各种字段正则表达式
+    #Regular expressions for various fields
     mailuser_pwd_p = re.compile(r'LOGIN(.*?)\r\n', re.S)
     maildate_p = re.compile(r'Date:(.*?)\r\n', re.S)
     mailfrom_p = re.compile(r'From:(.*?)\r\n', re.S)
@@ -385,7 +385,7 @@ def imap_parse(raw_data):
     return parse_data
 
 
-#Telnet连接数据,telnet 23,FTP控制数据 ftp 21
+#Telnet connection data,telnet 23,FTP control data ftp 21
 def telnet_ftp_data(PCAPS, host_ip, tfport):
     if tfport == 21:
         proto = 'FTP'
@@ -435,12 +435,12 @@ def telnet_ftp_data(PCAPS, host_ip, tfport):
     for ip_port, load_list in ip_port_ids_dict.items():
         data_id += 1
         raw_data = b''.join([PCAPS[i].load for i in load_list])
-        #解决编码问题
+        #Solving coding problems
         data = raw_data.decode('UTF-8', 'ignore')
         ip_port_data_list.append({'data_id':data_id,'ip_port':ip_port, 'data':data, 'raw_data':raw_data, 'lens':'%.3f'%(sum([len(corrupt_bytes(PCAPS[i])) for i in load_list])/1024.0)})
     return ip_port_data_list
 
-#客户端信息
+#Client information
 def client_info(PCAPS):
     with open('./app/utils/warning/CLIENT_INFO', 'r', encoding='UTF-8') as f:
         lines = f.readlines()
@@ -484,7 +484,7 @@ def client_info(PCAPS):
 
 
 #FTP:login: tteesstt\r\x00\r\nPassword: capture\r
-#敏感数据
+#Sensitive data
 def sen_data(PCAPS, host_ip):
     sendata_list = list()
     webdata = web_data(PCAPS, host_ip)
@@ -492,7 +492,7 @@ def sen_data(PCAPS, host_ip):
     telnetdata = telnet_ftp_data(PCAPS, host_ip, 23)
     ftpdata = telnet_ftp_data(PCAPS, host_ip, 21)
 
-    #Telnet协议帐号密码
+    #Telnet protocol account password
     telnet_pattern1 = re.compile(r'6c6f67696e3a.*?0d|4c6f67696e3a.*?0d') #login:
     telnet_pattern2 = re.compile(r'50617373776f72643a.*?0d|70617373776f72643a.*?0d') #Password:
     for telnet in telnetdata:
@@ -509,7 +509,7 @@ def sen_data(PCAPS, host_ip):
         if restp.strip():
             sendata_list.append({'ip_port': telnet['ip_port'], 'result': result, 'data':telnet['data']})
 
-    #FTP协议帐号密码
+    #FTP protocol account password
     ftp_patternl = re.compile(r'USER(.*?)331', re.S)
     ftp_patternp = re.compile(r'PASS(.*?)230', re.S)
     for ftp in ftpdata:
@@ -526,7 +526,7 @@ def sen_data(PCAPS, host_ip):
         if restp.strip():
             sendata_list.append({'ip_port': ftp['ip_port'], 'result': result, 'data':data})
 
-    #Mail协议帐号密码
+    #Mail protocol account password
     for mail in maildata:
         data = mail['data']
         ip_port = mail['ip_port']
@@ -566,7 +566,7 @@ def sen_data(PCAPS, host_ip):
         if result.strip():
             sendata_list.append({'ip_port': mail['ip_port'], 'result': result, 'data':data})
 
-    #HTTP协议帐号密码
+    #HTTP protocol account password
     with open('./app/utils/warning/HTTP_DATA', 'r', encoding='UTF-8') as f:
         lines = f.readlines()
     user = lines[0].strip()

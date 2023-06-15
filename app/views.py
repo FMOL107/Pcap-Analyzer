@@ -17,16 +17,16 @@ from scapy.all import rdpcap
 import os
 import hashlib
 
-# 导入函数到模板中
+# Importing functions into templates
 app.jinja_env.globals['enumerate'] = enumerate
 
-# 全局变量
-PCAP_NAME = ''  # 上传文件名
-PD = PcapDecode()  # 解析器
-PCAPS = None  # 数据包
+# Global variables
+PCAP_NAME = ''  # Upload file name
+PD = PcapDecode()  # Parser
+PCAPS = None  # Data packets
 
-#--------------------------------------------------------首页，上传------------
-# 首页
+#--------------------------------------------------------Home, Upload------------
+# Home
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -35,7 +35,7 @@ def index():
     return render_template('./home/index.html')
 
 
-# 数据包上传
+# Packet upload
 @app.route('/upload/', methods=['POST', 'GET'])
 def upload():
     filepath = app.config['UPLOAD_FOLDER']
@@ -54,48 +54,48 @@ def upload():
                 try:
                     pcap.save(os.path.join(filepath, PCAP_NAME))
                     PCAPS = rdpcap(os.path.join(filepath, PCAP_NAME))
-                    flash('恭喜你,上传成功！')
+                    flash('Congratulations, the upload was successful!')
                     return render_template('./upload/upload.html')
                 except Exception as e:
-                    flash('上传错误,错误信息:' +str(e))
+                    flash('Upload error, error message:' +str(e))
                     return render_template('./upload/upload.html')
             else:
-                flash('上传失败,请上传允许的数据包格式!')
+                flash('Upload failed, please upload the allowed packet format!')
                 return render_template('./upload/upload.html')
         else:
             return render_template('./upload/upload.html')
 
 
-#-------------------------------------------数据分析--------------------------
+#-------------------------------------------Data analysis--------------------------
 @app.route('/database/', methods=['POST', 'GET'])
 def basedata():
     '''
-    基础数据解析
+    Basic data analysis
     '''
     global PCAPS, PD
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
-        # 将筛选的type和value通过表单获取
+        # Get the filter type and value from the form
         filter_type = request.form.get('filter_type', type=str, default=None)
         value = request.form.get('value', type=str, default=None)
-        # 如果有选择，通过选择来获取值
+        # Get value by selection if available
         if filter_type and value:
             pcaps = proto_filter(filter_type, value, PCAPS, PD)
-        # 默认显示所有的协议数据
+        # All protocol data is displayed by default
         else:
             pcaps = get_all_pcap(PCAPS, PD)
         return render_template('./dataanalyzer/basedata.html', pcaps=pcaps)
 
 PDF_NAME = ''
-# 详细数据
+# Detailed data
 
 
 @app.route('/datashow/', methods=['POST', 'GET'])
 def datashow():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         global PDF_NAME
@@ -106,23 +106,23 @@ def datashow():
         PCAPS[dataid].pdfdump(app.config['PDF_FOLDER'] + PDF_NAME)
         return data
 
-# 将数据包保存为pdf
+# Save the packet as a pdf
 
 
 @app.route('/savepdf/', methods=['POST', 'GET'])
 def savepdf():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         return send_from_directory(app.config['PDF_FOLDER'], PDF_NAME, as_attachment=True)
 
 
-# 协议分析
+# Protocol analysis
 @app.route('/protoanalyzer/', methods=['POST', 'GET'])
 def protoanalyzer():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         data_dict = common_proto_statistic(PCAPS)
@@ -145,13 +145,13 @@ def protoanalyzer():
             dns_value_list.append(value)
         return render_template('./dataanalyzer/protoanalyzer.html', data=list(data_dict.values()), pcap_len=pcap_len_dict, pcap_keys=list(pcap_count_dict.keys()), http_key=http_key_list, http_value=http_value_list, dns_key=dns_key_list, dns_value=dns_value_list, pcap_count=pcap_count_dict)
 
-# 流量分析
+# Flow analysis
 
 
 @app.route('/flowanalyzer/', methods=['POST', 'GET'])
 def flowanalyzer():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         time_flow_dict = time_flow(PCAPS)
@@ -169,13 +169,13 @@ def flowanalyzer():
             most_flow_key.append(key)
         return render_template('./dataanalyzer/flowanalyzer.html', time_flow_keys=list(time_flow_dict.keys()), time_flow_values=list(time_flow_dict.values()), data_flow=data_flow_dict, ip_flow=data_ip_dict, proto_flow=list(proto_flow_dict.values()), most_flow_key=most_flow_key, most_flow_dict=most_flow_dict)
 
-# 访问地图
+# Access map
 
 
 @app.route('/ipmap/', methods=['POST', 'GET'])
 def ipmap():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         myip = getmyip()
@@ -193,15 +193,15 @@ def ipmap():
         else:
             return render_template('./error/neterror.html')
 
-# ----------------------------------------------数据提取页面---------------------------------------------
+# ----------------------------------------------Data extraction page---------------------------------------------
 
-# Web数据
+# Web data
 
 
 @app.route('/webdata/', methods=['POST', 'GET'])
 def webdata():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         dataid = request.args.get('id')
@@ -212,13 +212,13 @@ def webdata():
         else:
             return render_template('./dataextract/webdata.html', webdata=webdata_list)
 
-# Mail数据
+# Mail data
 
 
 @app.route('/maildata/', methods=['POST', 'GET'])
 def maildata():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         dataid = request.args.get('id')
@@ -256,7 +256,7 @@ def maildata():
         else:
             return render_template('./dataextract/maildata.html', maildata=mailata_list)
 
-# FTP数据
+# FTP data
 
 
 @app.route('/ftpdata/', methods=['POST', 'GET'])
@@ -273,13 +273,13 @@ def ftpdata():
         else:
             return render_template('./dataextract/ftpdata.html', ftpdata=ftpdata_list)
 
-# Telnet数据
+# Telnet data
 
 
 @app.route('/telnetdata/', methods=['POST', 'GET'])
 def telnetdata():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         dataid = request.args.get('id')
@@ -290,25 +290,25 @@ def telnetdata():
         else:
             return render_template('./dataextract/telnetdata.html', telnetdata=telnetdata_list)
 
-# 客户端信息
+# Client information
 
 
 @app.route('/clientinfo/', methods=['POST', 'GET'])
 def clientinfo():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         clientinfo_list = client_info(PCAPS)
         return render_template('./dataextract/clientinfo.html', clientinfos=clientinfo_list)
 
-# 敏感数据
+# Sensitive data
 
 
 @app.route('/sendata/', methods=['POST', 'GET'])
 def sendata():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         dataid = request.args.get('id')
@@ -319,15 +319,15 @@ def sendata():
         else:
             return render_template('./dataextract/sendata.html', sendata=sendata_list)
 
-# ----------------------------------------------一异常信息页面---------------------------------------------
+# ----------------------------------------------An exception information page---------------------------------------------
 
-# 异常数据
+# Abnormal data
 
 
 @app.route('/exceptinfo/', methods=['POST', 'GET'])
 def exceptinfo():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         dataid = request.args.get('id')
@@ -341,14 +341,14 @@ def exceptinfo():
         else:
             return render_template('./exceptions/exception.html', warning=warning_list)
 
-# ----------------------------------------------文件提取---------------------------------------------
-# WEB文件提取
+# ----------------------------------------------Document Extraction---------------------------------------------
+# WEB file extraction
 
 
 @app.route('/webfile/', methods=['POST', 'GET'])
 def webfile():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         host_ip = get_host_ip(PCAPS)
@@ -366,13 +366,13 @@ def webfile():
         else:
             return render_template('./fileextract/webfile.html', web_list=web_list)
 
-# Mail文件提取
+# Mail file extraction
 
 
 @app.route('/mailfile/', methods=['POST', 'GET'])
 def mailfile():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         host_ip = get_host_ip(PCAPS)
@@ -391,11 +391,11 @@ def mailfile():
             return render_template('./fileextract/mailfile.html', mail_list=mail_list)
 
 
-# FTP文件提取
+# FTP file extraction
 @app.route('/ftpfile/', methods=['POST', 'GET'])
 def ftpfile():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         host_ip = get_host_ip(PCAPS)
@@ -413,13 +413,13 @@ def ftpfile():
         else:
             return render_template('./fileextract/ftpfile.html', ftp_list=ftp_list)
 
-# 所有二进制文件提取
+# All binary files extracted
 
 
 @app.route('/allfile/', methods=['POST', 'GET'])
 def allfile():
     if PCAPS == None:
-        flash("请先上传要分析的数据包!")
+        flash("Please upload the packet to be analysed first!")
         return redirect(url_for('upload'))
     else:
         filepath = app.config['FILE_FOLDER'] + 'All/'
@@ -434,7 +434,7 @@ def allfile():
             return render_template('./fileextract/allfile.html', allfiles_dict=allfiles_dict)
 
 
-# ----------------------------------------------错误处理页面---------------------------------------------
+# ----------------------------------------------Error Handling Page---------------------------------------------
 @app.errorhandler(404)
 def internal_error(error):
     return render_template('./error/404.html'), 404
