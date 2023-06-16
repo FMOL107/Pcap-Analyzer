@@ -42,13 +42,13 @@
 ## Installation and deployment process.
 
 + Runtime environment: Python 3.5.X
-+ Operating system: Linux (Ubuntu 15.10 as an example)
++ Operating system: Linux (Debian 11 as an example)
 
 ### 1. Python-related environment configuration (Ubuntu installs Python 2.7 by default without additional Python installation)
-Python package manager installation: sudo apt-get install python-setuptools python-pip
+sudo apt install python3-setuptools python3-pip -y 
 
 ### 2. Related third-party dependency library installations:
-+ sudo apt-get install tcpdump graphviz imagemagick python-gnuplot python-crypto python-pyx
++ sudo apt install sudo wget curl git tcpdump graphviz imagemagick python3-gnuplot python3-pyx python3-pycryptodome nginx -y 
 + sudo pip3 install Flask
 + sudo pip3 install Flask-WTF
 + sudo pip3 install geoip2
@@ -92,7 +92,7 @@ error_log /var/log/nginx/error.log.
 + Start the system via the Gunicorn server server and run the command: gunicorn -c deploy_config.py run:app
 + At this point, you can only access the system locally at http://127.0.0.1:8000
 + Start the Nginx server: sudo service nginx start
-+ At this point, other hosts can also access the system at http://服务器IP:81
++ At this point, other hosts can also access the system at http://IP:81
 
 
 ## Analysis and optimisation
