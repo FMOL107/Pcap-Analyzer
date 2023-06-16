@@ -13,7 +13,7 @@ sudo pip3 install requests
 
 git clone <URL>
 # Proyecto original - https://github.com/HatBoy/Pcap-Analyzer
-# Fork en ingles - https://github.com/ccgcyber/Pcap-Analyzer
+# Fork en ingles - https://github.com/FMOL107/Pcap-Analyzer
 cd Pcap-Analyzer/
 nano config.py
 ## coding:UTF-8
